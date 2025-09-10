@@ -265,6 +265,42 @@ class WebcamCapture:
             "audio_device": self.settings.capture.audio_device
         }
         
+    async def pause_video(self) -> None:
+        """Pause video recording while keeping audio processing active."""
+        if not self.is_recording:
+            return
+            
+        try:
+            self.logger.info("Pausing video recording")
+            
+            # Stop the FFmpeg process but keep is_recording for audio
+            if self.process:
+                self.process.terminate()
+                await self._wait_for_process()
+                self.process = None
+                
+            self.logger.info("Video recording paused")
+            
+        except Exception as e:
+            self.logger.error("Failed to pause video recording", error=str(e))
+            
+    async def resume_video(self) -> None:
+        """Resume video recording."""
+        if self.process is not None:
+            return  # Already recording
+            
+        try:
+            self.logger.info("Resuming video recording")
+            await self._start_capture_process()
+            self.logger.info("Video recording resumed")
+            
+        except Exception as e:
+            self.logger.error("Failed to resume video recording", error=str(e))
+            
+    def get_status(self) -> Dict[str, Any]:
+        """Get current status for web API."""
+        return self.get_health_status()
+        
     async def get_recent_files(self, hours: int = 24) -> list[Path]:
         """Get list of video files created in the last N hours."""
         cutoff_time = time.time() - (hours * 3600)

@@ -21,6 +21,7 @@ from pydantic import BaseModel
 from capture.webcam_capture import WebcamCapture
 from audio.processor import AudioProcessor
 from storage.manager import StorageManager
+from web.api import WebAPI
 
 
 class CaptureSettings(BaseModel):
@@ -98,6 +99,15 @@ class Settings(BaseModel):
                 error=str(e)
             )
             return cls()
+    
+    @classmethod
+    def load(cls) -> "Settings":
+        """Load settings with defaults or from config file if available."""
+        config_path = Path("config/default.yaml")
+        if config_path.exists():
+            return cls.load_from_file(config_path)
+        else:
+            return cls()
 
 
 class WebcamCaptureApp:
@@ -112,6 +122,7 @@ class WebcamCaptureApp:
         self.storage_manager = StorageManager(settings)
         self.audio_processor = AudioProcessor(settings)
         self.webcam_capture = WebcamCapture(settings, self.audio_processor)
+        self.web_api = WebAPI(self)
         
     async def start(self) -> None:
         """Start the webcam capture system."""
