@@ -1,0 +1,140 @@
+# Webcam Capture MVP - Default Configuration
+# 
+# This file contains the default settings for the webcam capture system.
+# Override these settings using environment variables (prefix: WEBCAM_)
+# or by creating a local configuration file.
+
+# Capture Settings
+capture:
+  video_device: "Anker PowerConf C200"
+  audio_device: "Microphone (2- Anker PowerConf C200)"
+  quality: "medium"  # Options: low, medium, high
+  frame_rate: 30
+  resolution: "1280x720"  # Options: 640x480, 1280x720, 1920x1080
+  
+# Storage Configuration
+storage:
+  # Base archive path
+  archive_path: "C:\\archive"
+  
+  # Storage limits and retention
+  max_daily_size_gb: 10
+  retention_days: 30
+  
+  # Three-tier storage settings
+  hot_storage_hours: 48    # Keep on fast storage for immediate access
+  warm_storage_days: 30    # Keep compressed on slower storage
+  cold_storage_years: 2    # Long-term archive with high compression
+  
+  # Pruning configuration
+  enable_pruning: true
+  prune_silence_after_hours: 24
+  prune_routine_after_days: 7
+  keep_voice_segments: true
+  
+# Audio Processing
+audio:
+  # Voice Activity Detection
+  vad_threshold: 0.5
+  vad_model: "silero"  # Options: silero, webrtc
+  
+  # Speech Recognition
+  whisper_model: "base"  # Options: tiny, base, small, medium, large
+  whisper_device: "cpu"  # Options: cpu, cuda
+  
+  # Buffer management
+  buffer_duration_sec: 30
+  chunk_duration_sec: 1
+  sample_rate: 16000
+  channels: 1  # Mono audio for speech processing
+  
+# Voice Activation
+activation:
+  enabled: true
+  phrases:
+    start_recording: "computer start recording"
+    mark_important: "computer mark important"
+    analyze_content: "computer analyze this"
+    show_status: "computer show status"
+    pause_recording: "computer pause recording"
+  
+  # Detection parameters
+  confidence_threshold: 0.8
+  response_timeout_sec: 2
+  cooldown_sec: 1  # Prevent rapid repeated activations
+
+# System Configuration
+system:
+  # Logging
+  log_level: "INFO"  # Options: DEBUG, INFO, WARNING, ERROR
+  log_format: "json"  # Options: json, text
+  log_file: "logs/webcam-capture.log"
+  
+  # Performance
+  max_cpu_percent: 25
+  max_memory_gb: 4
+  
+  # Health monitoring
+  health_check_interval_sec: 30
+  restart_on_failure: true
+  max_restart_attempts: 3
+  restart_delay_sec: 5
+
+# API Configuration
+api:
+  enabled: true
+  host: "127.0.0.1"
+  port: 8080
+  
+  # Authentication (for future use)
+  require_auth: false
+  api_key: ""
+  
+  # CORS settings
+  cors_origins: ["http://localhost:3000"]
+
+# Agent Communication
+agents:
+  # Syl orchestrator connection
+  syl_enabled: true
+  syl_endpoint: "http://localhost:8000"
+  syl_api_key: ""
+  
+  # Status reporting
+  report_interval_sec: 60
+  include_metrics: true
+  
+  # Event streaming
+  stream_events: true
+  event_topics: ["capture", "voice_activation", "storage", "health"]
+
+# Feature Flags
+features:
+  # Experimental features
+  enable_computer_vision: false
+  enable_scene_analysis: false
+  enable_face_detection: false
+  
+  # Performance optimizations
+  hardware_acceleration: true
+  gpu_processing: false
+  
+  # Privacy features
+  privacy_mode: false
+  blur_faces: false
+  mute_keywords: []
+
+# Development Settings
+development:
+  # Debug features
+  save_raw_audio: false
+  save_debug_images: false
+  verbose_logging: false
+  
+  # Test data
+  use_test_devices: false
+  simulate_failures: false
+  
+  # Performance monitoring
+  profile_performance: false
+  collect_metrics: true
